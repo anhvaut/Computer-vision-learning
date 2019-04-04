@@ -7,6 +7,13 @@ cap = cv2.VideoCapture(0)
 while True:
     ret, frame = cap.read()
 
+    screen_width = int(cap.get(3))   
+    screen_height = int(cap.get(4)) 
+    x_screen_center = int(screen_width/2)
+    y_screen_center = int(screen_height/2)
+
+    cv2.line(frame,(x_screen_center,0),(x_screen_center,screen_height),(255,0,0),5)
+
     blur = cv2.GaussianBlur(frame, (11, 11), 0)
 
     hsv = cv2.cvtColor( blur, cv2.COLOR_BGR2HSV)
@@ -18,19 +25,12 @@ while True:
     mask = cv2.erode(mask, None, iterations=2)
     mask = cv2.dilate(mask, None, iterations=2)
 
-    #res = cv2.bitwise_and(frame, frame, mask = mask)
-    
-
-    # kernel =  np.ones((15,15), np.float32) / 255
-    # smothed = cv2.filter2D(res, -1, kernel)
-
-    #blur = cv2.GaussianBlur(res, (15, 15), 0)
-
-    #median = cv2.medianBlur(res, 15)
 
     ball_cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  	
     ball_cnts = imutils.grab_contours(ball_cnts)
     ball_center = None
+    x_ball_center = -1
+    y_ball_center = -1
  
 	# only proceed if at least one contour was found
     if len(ball_cnts) > 0:
@@ -40,7 +40,9 @@ while True:
         c = max(ball_cnts, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
-        ball_center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        x_ball_center = int(M["m10"] / M["m00"])
+        y_ball_center = int(M["m01"] / M["m00"])
+        ball_center = (x_ball_center,y_ball_center)
  
 		# only proceed if the radius meets a minimum size
         if radius > 10:
@@ -49,14 +51,21 @@ while True:
             cv2.circle(frame, (int(x), int(y)), int(radius), (0, 255, 255), 2)
             cv2.circle(frame, ball_center, 5, (0, 0, 255), -1)
  
+    distance = 0
+    if(x_ball_center != -1):
+        distance = x_ball_center - x_screen_center 
+    
+    if distance > 50:
+        print ('right')
+    elif distance < -50:
+        print ('left')
+
+        
+    # print (distance)
 
     cv2.imshow('frame', frame)
-    cv2.imshow('mask', mask)
-    #cv2.imshow('res', res)
-    #cv2.imshow('smothed', smothed)
-    #cv2.imshow('blur', blur)
-    #cv2.imshow('median', median)
-
+    # cv2.imshow('mask', mask)
+    
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
