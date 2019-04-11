@@ -1,0 +1,2 @@
+Viết bài phân biệt chữ số viết tay cho 2 chữ số 0 và 1 dùng 2 cách: (1) LogisticRegression trong thư viện sklearn, (2) tự viết
+Viết chương trình vào một ảnh nhận dạng xem đó là số 0 hay là số 1
