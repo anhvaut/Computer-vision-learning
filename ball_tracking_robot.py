@@ -41,7 +41,7 @@ while True:
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
         x_ball_center = int(M["m10"] / M["m00"])
-        y_ball_center = int(M["mi01"] / M["m00"])
+        y_ball_center = int(M["m01"] / M["m00"])
         ball_center = (x_ball_center,y_ball_center)
  
 		# only proceed if the radius meets a minimum size

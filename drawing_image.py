@@ -12,3 +12,4 @@ cv2.putText(img, 'Text', (130,130), font, 1, (0,255,255), 2, cv2.LINE_AA)
 cv2.imshow('gray', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
